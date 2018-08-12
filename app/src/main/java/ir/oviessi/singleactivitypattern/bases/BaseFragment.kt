@@ -39,7 +39,7 @@ open class BaseFragment : Fragment() {
                 break
 
             if (parentFrag is HasNavigationManager) {
-                return parentFrag as NavigationManager
+                return (parentFrag as HasNavigationManager).provideNavigationManager()
             }
         }
 
