@@ -38,13 +38,18 @@ class NavigationManager(private val mFragmentManager: FragmentManager,private va
      * @param fragment
      */
     fun open(fragment: Fragment) {
-        mFragmentManager.beginTransaction()
-       openFragment(fragment,true)
+        openFragment(fragment, true, false)
+
     }
 
-    private fun openFragment(fragment: Fragment,addToBackStack:Boolean) {
-        val fragTransaction=mFragmentManager.beginTransaction()
-        fragTransaction.replace(container, fragment)
+    private fun openFragment(fragment: Fragment, addToBackStack: Boolean, isRoot: Boolean) {
+        val fragTransaction = mFragmentManager.beginTransaction()
+
+        if (isRoot)
+            fragTransaction.replace(container, fragment, "ROOT")
+        else
+            fragTransaction.replace(container, fragment)
+
         fragTransaction.setCustomAnimations(R.anim.slide_in_left,
                 R.anim.slide_out_right,
                 R.anim.slide_in_right,
@@ -61,7 +66,7 @@ class NavigationManager(private val mFragmentManager: FragmentManager,private va
      */
     fun openAsRoot(fragment: Fragment) {
         popEveryFragment()
-        openFragment(fragment,false)
+        openFragment(fragment, false, true)
     }
 
 
@@ -69,13 +74,7 @@ class NavigationManager(private val mFragmentManager: FragmentManager,private va
      * Pops all the queued fragments
      */
     private fun popEveryFragment() {
-        // Clear all back stack.
-        val backStackCount = mFragmentManager.backStackEntryCount
-        for (i in 0 until backStackCount) {
-            // Get the back stack fragment id.
-            val backStackId = mFragmentManager.getBackStackEntryAt(i).id
-            mFragmentManager.popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
+        mFragmentManager.popBackStackImmediate("ROOT", FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
 
